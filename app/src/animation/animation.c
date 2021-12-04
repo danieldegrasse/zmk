@@ -82,49 +82,43 @@ static const size_t pixels_size = DT_INST_PROP_LEN(0, pixels);
 static struct led_rgb px_buffer[DT_INST_PROP_LEN(0, pixels)];
 
 static void zmk_animation_tick(struct k_work *work) {
-	for (size_t i = 0; i < animations_size; ++i) {
-		animation_prep_next_frame(animations[i]);
-	}
+    for (size_t i = 0; i < animations_size; ++i) {
+        animation_prep_next_frame(animations[i]);
+    }
 
-	for (size_t i = 0; i < pixels_size; ++i) {
-		struct zmk_color_rgb rgb = {
-			.r = 0,
-			.g = 0,
-			.b = 0,
-		};
+    for (size_t i = 0; i < pixels_size; ++i) {
+        struct zmk_color_rgb rgb = {
+            .r = 0,
+            .g = 0,
+            .b = 0,
+        };
 
-		animation_get_pixel(pixels[i].animation, &pixels[i].position, &rgb);
+        animation_get_pixel(pixels[i].animation, &pixels[i].position, &rgb);
 
-		zmk_rgb_to_led_rgb(&rgb, &px_buffer[i]);
-	}
+        zmk_rgb_to_led_rgb(&rgb, &px_buffer[i]);
+    }
 
-	size_t pixels_updated = 0;
+    size_t pixels_updated = 0;
 
-	for (size_t i = 0; i < drivers_size; ++i) {
-		led_strip_update_rgb(
-			drivers[i],
-			&px_buffer[pixels_updated],
-			pixels_per_driver[i]
-		);
+    for (size_t i = 0; i < drivers_size; ++i) {
+        led_strip_update_rgb(drivers[i], &px_buffer[pixels_updated], pixels_per_driver[i]);
 
-		pixels_updated += (size_t) pixels_per_driver;
-	}
+        pixels_updated += (size_t)pixels_per_driver;
+    }
 }
 
 K_WORK_DEFINE(animation_work, zmk_animation_tick);
 
-static void zmk_animation_tick_handler(struct k_timer *timer) {
-	k_work_submit(&animation_work);
-}
+static void zmk_animation_tick_handler(struct k_timer *timer) { k_work_submit(&animation_work); }
 
 K_TIMER_DEFINE(animation_tick, zmk_animation_tick_handler, NULL);
 
 static int zmk_animation_init(const struct device *dev) {
-	LOG_INF("ZMK Animation Ready");
+    LOG_INF("ZMK Animation Ready");
 
-	k_timer_start(&animation_tick, K_NO_WAIT, K_MSEC(1000 / CONFIG_ZMK_ANIMATION_FPS));
+    k_timer_start(&animation_tick, K_NO_WAIT, K_MSEC(1000 / CONFIG_ZMK_ANIMATION_FPS));
 
-	return 0;
+    return 0;
 }
 
 SYS_INIT(zmk_animation_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
