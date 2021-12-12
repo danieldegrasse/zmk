@@ -82,6 +82,7 @@ target_sources_ifdef(CONFIG_ZMK_BATTERY_REPORTING app PRIVATE src/battery.c)
 
 target_sources_ifdef(CONFIG_ZMK_ANIMATION app PRIVATE src/animation/animation.c)
 target_sources_ifdef(CONFIG_ZMK_ANIMATION app PRIVATE src/animation/color.c)
+target_sources_ifdef(CONFIG_ZMK_ANIMATION app PRIVATE src/animation/animation_ripple.c)
 target_sources_ifdef(CONFIG_ZMK_ANIMATION app PRIVATE src/animation/animation_solid.c)
 
 target_sources_ifdef(CONFIG_ZMK_SPLIT app PRIVATE src/events/split_peripheral_status_changed.c)
