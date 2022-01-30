@@ -41,6 +41,7 @@ struct animation_control_data {
 
 static int animation_control_load_settings(const struct device *dev, const char *name, size_t len,
                                            settings_read_cb read_cb, void *cb_arg) {
+#if IS_ENABLED(CONFIG_SETTINGS)
     const char *next;
     int rc;
 
@@ -58,8 +59,12 @@ static int animation_control_load_settings(const struct device *dev, const char 
     }
 
     return -ENOENT;
+#else
+    return 0;
+#endif /* IS_ENABLED(CONFIG_SETTINGS) */
 }
 
+#if IS_ENABLED(CONFIG_SETTINGS)
 static void animation_control_save_work(struct k_work *work) {
     struct animation_control_work_context *ctx =
         CONTAINER_OF(work, struct animation_control_work_context, save_work);
@@ -77,6 +82,7 @@ static int animation_control_save_settings(const struct device *dev) {
 
     return k_work_reschedule(&ctx->save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
 }
+#endif /* IS_ENABLED(CONFIG_SETTINGS) */
 
 int animation_control_handle_command(const struct device *dev, uint8_t command, uint8_t param) {
     const struct animation_control_config *config = dev->config;
@@ -138,8 +144,9 @@ int animation_control_handle_command(const struct device *dev, uint8_t command, 
         break;
     }
 
-    // Save the new settings
+#if IS_ENABLED(CONFIG_SETTINGS)
     animation_control_save_settings(dev);
+#endif /* IS_ENABLED(CONFIG_SETTINGS) */
 
     // Force refresh
     zmk_animation_request_frames(1);
@@ -190,6 +197,7 @@ static void animation_control_stop(const struct device *dev) {
 }
 
 static int animation_control_init(const struct device *dev) {
+#if IS_ENABLED(CONFIG_SETTINGS)
     const struct animation_control_config *config = dev->config;
 
     settings_subsys_init();
@@ -199,6 +207,7 @@ static int animation_control_init(const struct device *dev) {
     k_work_init_delayable(&config->work->save_work, animation_control_save_work);
 
     settings_load_subtree(dev->name);
+#endif /* IS_ENABLED(CONFIG_SETTINGS) */
 
     return 0;
 }
