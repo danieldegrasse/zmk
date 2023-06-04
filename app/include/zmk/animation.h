@@ -58,6 +58,15 @@ void zmk_hsl_to_rgb(const struct zmk_color_hsl *hsl, struct zmk_color_rgb *rgb);
 void zmk_rgb_to_led_rgb(const struct zmk_color_rgb *rgb, struct led_rgb *led);
 
 /**
+ * Converts the internal RGB representation into a uint8_t representing
+ * mono LED brightness. for use with led drivers.
+ *
+ * @param rgb Color to convert
+ * @param led Converted mono value
+ */
+void zmk_rgb_to_mono(const struct zmk_color_rgb *rgb, uint8_t *led);
+
+/**
  * Returns true if two HSL colors are the same.
  *
  * @param  a HSL color to compare
