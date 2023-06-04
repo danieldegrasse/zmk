@@ -50,6 +50,9 @@ static const size_t drivers_size = DT_INST_PROP_LEN(0, drivers);
 /**
  * Array containing the number of LEDs handled by each device.
  */
+#if DT_INST_NODE_HAS_PROP(0, chain_lengths)
+static const uint8_t pixels_per_driver[] = DT_INST_PROP(0, chain_lengths);
+#else
 static const uint8_t pixels_per_driver[] = {
     DT_INST_FOREACH_PROP_ELEM(0, drivers, PHANDLE_TO_CHAIN_LENGTH)
 };
