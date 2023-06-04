@@ -137,7 +137,7 @@ static void zmk_animation_tick(struct k_work *work) {
     for (size_t i = 0; i < drivers_size; ++i) {
         led_strip_update_rgb(drivers[i], &px_buffer[pixels_updated], pixels_per_driver[i]);
 
-        pixels_updated += (size_t)pixels_per_driver;
+        pixels_updated += (size_t)pixels_per_driver[i];
     }
 }
 
@@ -161,7 +161,7 @@ static void zmk_animation_tick(struct k_work *work) {
     for (size_t i = 0; i < drivers_size; ++i) {
 	led_write_channels(drivers[i], 0, pixels_per_driver[i], &px_buffer[pixels_updated]);
 
-        pixels_updated += (size_t)pixels_per_driver;
+        pixels_updated += (size_t)pixels_per_driver[i];
     }
 }
 
@@ -224,7 +224,7 @@ static int zmk_animation_init(const struct device *dev) {
             // for better space efficiency
             pixel_distance[k++] = sqrt(pow(pixels[i].position_x - pixels[j].position_x, 2) +
                                        pow(pixels[i].position_y - pixels[j].position_y, 2)) *
-                                  255 / 360;
+		                  255 / 360;
         }
     }
 #endif
