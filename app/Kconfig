@@ -306,10 +306,28 @@ config ZMK_BACKLIGHT_AUTO_OFF_USB
 endif
 
 config ZMK_ANIMATION
-	bool "RGB Animations"
-	select LED_STRIP
+	bool "LED Animations"
 
 if ZMK_ANIMATION
+
+choice ZMK_ANIMATION_TYPE
+	prompt "RGB or single color animation support"
+	default ZMK_ANIMATION_TYPE_RGB
+
+config ZMK_ANIMATION_TYPE_RGB
+	bool "RGB animation"
+	select LED_STRIP
+	help
+	  Enable RGB animation support.
+
+config ZMK_ANIMATION_TYPE_MONO
+	bool "Single color LED animation"
+	select LED
+	help
+	  Enable single color LED animation support.
+endchoice
+
+
 
 config ZMK_ANIMATION_FPS
 	int "Animation FPS"

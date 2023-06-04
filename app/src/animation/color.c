@@ -136,3 +136,13 @@ struct zmk_color_rgb __zmk_apply_blending_mode(struct zmk_color_rgb base_value,
 
     return base_value;
 }
+
+
+/*
+ * Convert RGB value to mono color for monochrome LED.
+ */
+void zmk_rgb_to_mono(const struct zmk_color_rgb *rgb, uint8_t *led)
+{
+	float blend = ((rgb->r + rgb->b + rgb->g) / 3) * 255;
+	*led = (uint8_t)blend;
+}

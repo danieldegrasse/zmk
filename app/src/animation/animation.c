@@ -16,6 +16,7 @@
 
 #include <drivers/animation.h>
 #include <zephyr/drivers/led_strip.h>
+#include <zephyr/drivers/led.h>
 
 #include <zmk/animation.h>
 #include <zmk/event_manager.h>
@@ -71,7 +72,11 @@ static const size_t pixels_size = DT_INST_PROP_LEN(0, pixels);
 /**
  * Buffer for RGB values ready to be sent to the drivers.
  */
+#ifdef CONFIG_ZMK_ANIMATION_TYPE_RGB
 static struct led_rgb px_buffer[DT_INST_PROP_LEN(0, pixels)];
+#elif defined(CONFIG_ZMK_ANIMATION_TYPE_MONO)
+static uint8_t px_buffer[DT_INST_PROP_LEN(0, pixels)];
+#endif
 
 /**
  * Counter for animation frames that have been requested but have yet to be executed.
@@ -110,6 +115,7 @@ uint8_t zmk_animation_get_pixel_distance(size_t pixel_idx, size_t other_pixel_id
 
 #endif
 
+#ifdef CONFIG_ZMK_ANIMATION_TYPE_RGB
 static void zmk_animation_tick(struct k_work *work) {
     LOG_DBG("Animation tick");
     animation_render_frame(animation_root, &pixels[0], pixels_size);
@@ -131,6 +137,32 @@ static void zmk_animation_tick(struct k_work *work) {
         pixels_updated += (size_t)pixels_per_driver;
     }
 }
+
+#elif defined(CONFIG_ZMK_ANIMATION_TYPE_MONO)
+
+static void zmk_animation_tick(struct k_work *work) {
+    LOG_DBG("Animation tick");
+    animation_render_frame(animation_root, &pixels[0], pixels_size);
+
+    for (size_t i = 0; i < pixels_size; ++i) {
+        zmk_rgb_to_mono(&pixels[i].value, &px_buffer[i]);
+
+        // Reset values for the next cycle
+        pixels[i].value.r = 0;
+        pixels[i].value.g = 0;
+        pixels[i].value.b = 0;
+    }
+
+    size_t pixels_updated = 0;
+
+    for (size_t i = 0; i < drivers_size; ++i) {
+	led_write_channels(drivers[i], 0, pixels_per_driver[i], &px_buffer[pixels_updated]);
+
+        pixels_updated += (size_t)pixels_per_driver;
+    }
+}
+
+#endif
 
 K_WORK_DEFINE(animation_work, zmk_animation_tick);
 
