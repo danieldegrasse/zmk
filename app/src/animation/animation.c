@@ -236,7 +236,7 @@ static int zmk_animation_init(const struct device *dev) {
     return 0;
 }
 
-SYS_INIT(zmk_animation_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
+SYS_INIT(zmk_animation_init, APPLICATION, 95);
 
 ZMK_LISTENER(amk_animation, zmk_animation_on_activity_state_changed);
 ZMK_SUBSCRIPTION(amk_animation, zmk_activity_state_changed);
