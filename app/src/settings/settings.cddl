@@ -1,0 +1,19 @@
+;
+; Copyright (c) 2023 The ZMK Contibutors
+;
+; SPDX-License-Identifier: MIT
+;
+
+keymap = [
+    id: uint, ; layer ID
+    map: bstr, ; byte string of keycodes in keymap
+]
+
+; Commands are used as a header for additional data, so the size should
+; not change.
+command = [
+    type: ((read_keymap: 0) / (set_keymap: 1) /
+    	(read_keymap_res: 2) / (set_keymap_res: 3)),
+    len: uint, ; length of command data packet
+]
+

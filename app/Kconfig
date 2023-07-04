@@ -191,6 +191,50 @@ endmenu
 
 rsource "src/split/Kconfig"
 
+menuconfig ZMK_SETTINGS
+    bool "Runtime Settings Configuration"
+    select SETTINGS
+
+if ZMK_SETTINGS
+
+config ZMK_SETTINGS_MAX_READ
+    int "Max input buffer for settings system"
+    default 512
+
+config ZMK_SETTINGS_MAX_WRITE
+    int "Max output buffer for settings system"
+    default 512
+
+choice ZMK_SETTINGS_BACKEND
+    prompt "Settings management transport backend"
+    default ZMK_SETTINGS_BACKEND_CDC_ACM if USB
+
+config ZMK_SETTINGS_BACKEND_CDC_ACM
+    bool "Send settings data over CDC ACM"
+    select USB
+    select USB_COMPOSITE_DEVICE
+    select SERIAL
+    select UART_INTERRUPT_DRIVEN
+    select UART_LINE_CTRL
+    help
+      Transfer settings commands over USB. The transport layer itself
+      uses UART, over CDC ACM
+
+endchoice
+
+if ZMK_SETTINGS_BACKEND_CDC_ACM
+
+config ZMK_SETTINGS_CDC_ACM_RING_BUF_SIZE
+    int "RX/TX ring buffer size for CDC ACM backend"
+    default 128
+
+# ZMK_SETTINGS_BACKEND_CDC_ACM
+endif
+
+
+# ZMK_SETTINGS
+endif
+
 #Basic Keyboard Setup
 endmenu
 
