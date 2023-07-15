@@ -17,6 +17,16 @@
 
 #define COLLECTION_REPORT 0x03
 
+#define HID_USAGE_PAGE16(page)		\
+    HID_ITEM(HID_ITEM_TAG_USAGE_PAGE, HID_ITEM_TYPE_GLOBAL, 2), \
+    (page & 0xFF), ((page & 0xFF00) >> 8)
+
+#define HID_INPUT_REPORT_TYPE 0x1
+#define HID_OUTPUT_REPORT_TYPE 0x2
+#define HID_FEATURE_REPORT_TYPE 0x3
+
+#define SETTINGS_REPORT_ID_KBD 0x3
+
 static const uint8_t zmk_hid_report_desc[] = {
     HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP),
     HID_USAGE(HID_USAGE_GD_KEYBOARD),
@@ -89,6 +99,19 @@ static const uint8_t zmk_hid_report_desc[] = {
     /* INPUT (Data,Ary,Abs) */
     HID_INPUT(0x00),
     HID_END_COLLECTION,
+#if IS_ENABLED(CONFIG_ZMK_SETTINGS)
+    HID_USAGE_PAGE16(HID_USAGE_VENDOR),
+    HID_USAGE(HID_USAGE_ZMK_KEYMAP),
+    HID_COLLECTION(HID_COLLECTION_APPLICATION),
+    HID_REPORT_ID(SETTINGS_REPORT_ID_KBD),
+    HID_USAGE_PAGE16(HID_USAGE_VENDOR),
+    HID_LOGICAL_MIN8(0x00),
+    HID_LOGICAL_MAX8(0xFF),
+    HID_REPORT_SIZE(0x08),
+    /* Feature (Data,Ary,Abs) */
+    HID_FEATURE(0x0),
+    HID_END_COLLECTION,
+#endif
 };
 
 // struct zmk_hid_boot_report
@@ -124,6 +147,15 @@ struct zmk_hid_consumer_report_body {
 struct zmk_hid_consumer_report {
     uint8_t report_id;
     struct zmk_hid_consumer_report_body body;
+} __packed;
+
+struct zmk_hid_vendor_report_body {
+    uint8_t keys[1];
+} __packed;
+
+struct zmk_hid_vendor_report {
+    uint8_t report_id;
+    struct zmk_hid_vendor_report_body body;
 } __packed;
 
 zmk_mod_flags_t zmk_hid_get_explicit_mods();

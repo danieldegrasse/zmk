@@ -9,6 +9,9 @@
 #include <zmk/settings.h>
 #include <cbor_settings_encode.h>
 #include <cbor_settings_decode.h>
+#include <zmk/events/usb_feature_report.h>
+
+#include <zmk/hid.h>
 
 uint8_t settings_read_buf[CONFIG_ZMK_SETTINGS_MAX_READ];
 uint32_t settings_read_offset;
@@ -125,9 +128,39 @@ static void zmk_settings_work_handler(struct k_work *work) {
 	}
 }
 
+static struct zmk_hid_vendor_report report = {
+	.report_id = SETTINGS_REPORT_ID_KBD,
+	.body = {
+		.keys = {0xDE},
+	},
+};
+
+static int handle_keyboard_feature_report(const struct zmk_usb_feature_report *ev) {
+	if (ev->direction == USB_REPORT_GET) {
+		*ev->data = (uint8_t *)&report;
+		*ev->len = sizeof(report);
+	} else {
+		report.body.keys[0] = (*ev->data)[1];
+	}
+	return ZMK_EV_EVENT_HANDLED;
+}
+
+static int feature_report_listener(const zmk_event_t *eh) {
+	const struct zmk_usb_feature_report *ev = as_zmk_usb_feature_report(eh);
+	switch (ev->id) {
+	case SETTINGS_REPORT_ID_KBD:
+		return handle_keyboard_feature_report(ev);
+	default:
+		return ZMK_EV_EVENT_BUBBLE;
+	}
+}
+
 void zmk_settings_init(void) {
 	/* Setup settings work queue */
 	k_work_init(&zmk_settings_work, zmk_settings_work_handler);
 	/* Start transport backend */
 	settings_transport_init();
 }
+
+ZMK_LISTENER(settings, feature_report_listener);
+ZMK_SUBSCRIPTION(settings, zmk_usb_feature_report);

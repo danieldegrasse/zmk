@@ -68,7 +68,7 @@ static uint8_t _zmk_keymap_layer_default = 0;
 // still send the release event to the behavior in that layer also.
 static uint32_t zmk_keymap_active_behavior_layer[ZMK_KEYMAP_LEN];
 
-static struct zmk_behavior_binding zmk_keymap[ZMK_KEYMAP_LAYERS_LEN][ZMK_KEYMAP_LEN] = {
+static volatile struct zmk_behavior_binding zmk_keymap[ZMK_KEYMAP_LAYERS_LEN][ZMK_KEYMAP_LEN] = {
     DT_INST_FOREACH_CHILD(0, TRANSFORMED_LAYER)};
 
 static const char *zmk_keymap_layer_names[ZMK_KEYMAP_LAYERS_LEN] = {

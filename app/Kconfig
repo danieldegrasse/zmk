@@ -103,6 +103,13 @@ config USB_NUMOF_EP_WRITE_RETRIES
 config USB_HID_POLL_INTERVAL_MS
     default 1
 
+config USB_FEATURE_REPORTS
+    bool "Enable support for feature report events"
+    help
+      Enable support for reporting of feature report events via the ZMK
+      event system. This can be used to implement feature report endpoints
+      within ZMK.
+
 #ZMK_USB
 endif
 
@@ -194,6 +201,7 @@ rsource "src/split/Kconfig"
 menuconfig ZMK_SETTINGS
     bool "Runtime Settings Configuration"
     select SETTINGS
+    select USB_FEATURE_REPORTS
 
 if ZMK_SETTINGS
 
