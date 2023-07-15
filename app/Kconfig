@@ -198,6 +198,11 @@ endmenu
 
 rsource "src/split/Kconfig"
 
+config ZMK_SETTINGS
+    bool "Runtime Settings Configuration"
+    select SETTINGS
+    select USB_FEATURE_REPORTS
+
 #Basic Keyboard Setup
 endmenu
 
