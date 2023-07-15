@@ -27,32 +27,32 @@ static void in_ready_cb(const struct device *dev) { k_sem_give(&hid_sem); }
 #ifdef CONFIG_USB_FEATURE_REPORTS
 
 static int raise_report_event(bool get_report, struct usb_setup_packet *setup,
-							  int32_t *len, uint8_t **data)
+                              int32_t *len, uint8_t **data)
 {
-	int ret;
-	uint8_t report_id = setup->wValue & 0xFF; /* Low 8 bytes have report ID */
-	enum usb_report_dir dir = get_report ? USB_REPORT_GET : USB_REPORT_SET;
-	/* Check the high byte of wValue to see if this was a feature report */
-	if ((setup->wValue >> 8) != HID_FEATURE_REPORT_TYPE) {
-		/* Not supported */
-		return -ENOTSUP;
-	}
-	/* Raise a new feature report event */
+    int ret;
+    uint8_t report_id = setup->wValue & 0xFF; /* Low 8 bytes have report ID */
+    enum usb_report_dir dir = get_report ? USB_REPORT_GET : USB_REPORT_SET;
+    /* Check the high byte of wValue to see if this was a feature report */
+    if ((setup->wValue >> 8) != HID_FEATURE_REPORT_TYPE) {
+        /* Not supported */
+        return -ENOTSUP;
+    }
+    /* Raise a new feature report event */
     ret = ZMK_EVENT_RAISE(new_zmk_usb_feature_report(
         (struct zmk_usb_feature_report) {
             .direction = dir,
-			.id = report_id,
+            .id = report_id,
             .data = data,
             .len = len,
         }));
-	/*
-	 * Note- one issue with using the event handler is we cannot verify
-	 * that the event was actually handled, so we will respond to any
-	 * feature report from the host, even if there is not a handler
-	 * for that report ID.
-	 */
+    /*
+     * Note- one issue with using the event handler is we cannot verify
+     * that the event was actually handled, so we will respond to any
+     * feature report from the host, even if there is not a handler
+     * for that report ID.
+     */
     if (ret) {
-		LOG_DBG("Feature event handle returned an error: %d", ret);
+        LOG_DBG("Feature event handle returned an error: %d", ret);
         return -ENOTSUP;
     }
     return 0;
@@ -60,17 +60,17 @@ static int raise_report_event(bool get_report, struct usb_setup_packet *setup,
 
 
 static int get_report_cb(const struct device *dev,
-		         struct usb_setup_packet *setup,
-			 int32_t *len, uint8_t **data)
+                    struct usb_setup_packet *setup,
+                    int32_t *len, uint8_t **data)
 {
-	return raise_report_event(true, setup, len, data);
+    return raise_report_event(true, setup, len, data);
 }
 
 static int set_report_cb(const struct device *dev,
-		         struct usb_setup_packet *setup,
-			 int32_t *len, uint8_t **data)
+                    struct usb_setup_packet *setup,
+                    int32_t *len, uint8_t **data)
 {
-	return raise_report_event(false, setup, len, data);
+    return raise_report_event(false, setup, len, data);
 }
 
 #endif /* CONFIG_USB_FEATURE_REPORTS */

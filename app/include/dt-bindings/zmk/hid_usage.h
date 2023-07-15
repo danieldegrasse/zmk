@@ -2564,3 +2564,7 @@
 #define HID_USAGE_FIDO_U2F_AUTHENTICATOR_DEVICE (0x01) // CA
 #define HID_USAGE_FIDO_INPUT_REPORT_DATA (0x20)        // DV
 #define HID_USAGE_FIDO_OUTPUT_REPORT_DATA (0x21)       // DV
+
+/* Page 0xFF00: ZMK Specific (Vendor defined) */
+#define HID_USAGE_ZMK_UNDEFINED (0x00)
+#define HID_USAGE_ZMK_KEYMAP (0x01)			// DV
