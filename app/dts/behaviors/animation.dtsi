@@ -10,6 +10,7 @@
             compatible = "zmk,behavior-animation";
             label = "ANIMATION";
             #binding-cells = <1>;
+            behavior-id = <BEHAVIOR_ANIMATION>;
         };
     };
 };

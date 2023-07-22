@@ -13,6 +13,7 @@
             release-after-ms = <1000>;
             bindings = <&kp>;
             ignore-modifiers;
+            behavior-id = <BEHAVIOR_STICKY_KEY>;
         };
         /omit-if-no-ref/ sl: behavior_sticky_layer {
             compatible = "zmk,behavior-sticky-key";
@@ -21,6 +22,7 @@
             release-after-ms = <1000>;
             bindings = <&mo>;
             quick-release;
+            behavior-id = <BEHAVIOR_STICKY_LAYER>;
         };
     };
 

@@ -10,6 +10,7 @@
             compatible = "zmk,behavior-none";
             label = "NONE";
             #binding-cells = <0>;
+            behavior-id = <BEHAVIOR_NONE>;
         };
     };
 };

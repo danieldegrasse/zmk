@@ -9,3 +9,6 @@ properties:
     type: int
     required: true
     const: 0
+  behavior-id:
+    type: int
+    required: true

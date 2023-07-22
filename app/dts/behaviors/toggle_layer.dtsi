@@ -10,6 +10,7 @@
             compatible = "zmk,behavior-toggle-layer";
             label = "TOGGLE_LAYER";
             #binding-cells = <1>;
+            behavior-id = <BEHAVIOR_TOGGLE_LAYER>;
         };
     };
 };

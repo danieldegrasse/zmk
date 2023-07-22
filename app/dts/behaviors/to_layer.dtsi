@@ -10,6 +10,7 @@
             compatible = "zmk,behavior-to-layer";
             label = "TO_LAYER";
             #binding-cells = <1>;
+            behavior-id = <BEHAVIOR_TO_LAYER>;
         };
     };
 };

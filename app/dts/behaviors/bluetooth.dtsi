@@ -10,6 +10,7 @@
             compatible = "zmk,behavior-bluetooth";
             label = "BLUETOOTH";
             #binding-cells = <2>;
+            behavior-id = <BEHAVIOR_BLUETOOTH>;
         };
     };
 };
