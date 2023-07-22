@@ -9,6 +9,9 @@ properties:
     type: int
     required: true
     const: 1
+  behavior-id:
+    type: int
+    required: true
 
 binding-cells:
   - param1

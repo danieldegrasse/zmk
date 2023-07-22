@@ -10,6 +10,7 @@
             compatible = "zmk,behavior-outputs";
             label = "OUTPUTS";
             #binding-cells = <1>;
+            behavior-id = <BEHAVIOR_OUTPUTS>;
         };
     };
 };

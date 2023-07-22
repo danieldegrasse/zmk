@@ -11,6 +11,7 @@
             compatible = "zmk,behavior-key-press";
             label = "KEY_PRESS";
             #binding-cells = <1>;
+            behavior-id = <BEHAVIOR_KEY_PRESS>;
         };
     };
 };

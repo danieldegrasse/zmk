@@ -12,6 +12,7 @@
             compatible = "zmk,behavior-reset";
             label = "SYSRESET";
             #binding-cells = <0>;
+            behavior-id = <BEHAVIOR_RESET>;
         };
 
         bootloader: behavior_reset_dfu {
@@ -19,6 +20,7 @@
             label = "BOOTLOAD";
             type = <RST_UF2>;
             #binding-cells = <0>;
+            behavior-id = <BEHAVIOR_BOOTLOAD>;
         };
     };
 };

@@ -10,6 +10,7 @@
             compatible = "zmk,behavior-transparent";
             label = "TRANS";
             #binding-cells = <0>;
+            behavior-id = <BEHAVIOR_TRANSPARENT>;
         };
     };
 };

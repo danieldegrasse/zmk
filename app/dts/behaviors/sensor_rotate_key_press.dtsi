@@ -12,6 +12,7 @@
             label = "ENC_KEY_PRESS";
             #sensor-binding-cells = <2>;
             bindings = <&kp>, <&kp>;
+            behavior-id = <BEHAVIOR_SENSOR_ROTATE_KEY_PRESS>;
         };
     };
 };

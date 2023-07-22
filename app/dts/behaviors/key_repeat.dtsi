@@ -13,6 +13,7 @@
             label = "KEY_REPEAT";
             #binding-cells = <0>;
             usage-pages = <HID_USAGE_KEY>;
+            behavior-id = <BEHAVIOR_KEY_REPEAT>;
         };
     };
 };
