@@ -203,6 +203,15 @@ config ZMK_SETTINGS
     select SETTINGS
     select USB_FEATURE_REPORTS
 
+if ZMK_SETTINGS
+
+config ZMK_SETTINGS_KEYMAP_LAYERS
+    int "Maximum dynamic keymap layers supported"
+    default 3
+
+# ZMK_SETTINGS
+endif
+
 #Basic Keyboard Setup
 endmenu
 

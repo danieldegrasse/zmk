@@ -16,6 +16,7 @@ LOG_MODULE_REGISTER(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/matrix.h>
 #include <zmk/kscan.h>
 #include <zmk/display.h>
+#include <zmk/config.h>
 #include <drivers/ext_power.h>
 
 void main(void) {
@@ -32,4 +33,7 @@ void main(void) {
     /* Mark image as confirmed */
     boot_write_img_confirmed();
 #endif /* CONFIG_BOOTLOADER_MCUBOOT */
+#ifdef CONFIG_ZMK_SETTINGS
+    zmk_config_init();
+#endif /* CONFIG_ZMK_SETTINGS */
 }
