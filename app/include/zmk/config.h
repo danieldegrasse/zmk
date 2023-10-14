@@ -51,3 +51,12 @@ int zmk_config_get_key_record(uint8_t layer_index, uint8_t key_index,
  */
 int zmk_config_set_key_record(uint8_t layer_index, uint8_t key_index,
                                 struct zmk_keymap_record *record);
+
+/**
+ * @brief save all key records to flash
+ *
+ * Saves all key records to flash. This will make the settings persistent
+ * across reboots
+ * @return 0 on success, or negative on error
+ */
+int zmk_config_save_key_records(void);

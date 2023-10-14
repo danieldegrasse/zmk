@@ -89,7 +89,7 @@ static int handle_keyboard_key_commit(const struct zmk_usb_feature_report *ev) {
     int ret;
 
     if (ev->direction == USB_REPORT_SET) {
-        ret = settings_save();
+        ret = zmk_config_save_key_records();
         if (ret < 0) {
             return ret;
         }
