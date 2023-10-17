@@ -338,6 +338,23 @@ config ZMK_ANIMATION_PIXEL_DISTANCE
 	bool "Generate a lookup table for distances between pixels"
 	default y
 
+# Animation driver types
+config ZMK_ANIMATION_SOLID
+	bool "Solid animation driver"
+	default y if DT_HAS_ZMK_ANIMATION_SOLID_ENABLED
+
+config ZMK_ANIMATION_CONTROL
+	bool "Root control animation"
+	default y if DT_HAS_ZMK_ANIMATION_CONTROL_ENABLED
+
+config ZMK_ANIMATION_RIPPLE
+	bool "Ripple animation driver"
+	default y if DT_HAS_ZMK_ANIMATION_RIPPLE_ENABLED
+
+config ZMK_ANIMATION_COMPOSE
+	bool "Animation compose driver"
+	default y if DT_HAS_ZMK_ANIMATION_COMPOSE_ENABLED
+
 #ZMK_ANIMATION
 endif
 
