@@ -80,13 +80,10 @@ target_sources_ifdef(CONFIG_ZMK_BACKLIGHT app PRIVATE src/behaviors/behavior_bac
 target_sources_ifdef(CONFIG_ZMK_BATTERY_REPORTING app PRIVATE src/events/battery_state_changed.c)
 target_sources_ifdef(CONFIG_ZMK_BATTERY_REPORTING app PRIVATE src/battery.c)
 
-target_sources_ifdef(CONFIG_ZMK_ANIMATION app PRIVATE src/animation/animation.c)
-target_sources_ifdef(CONFIG_ZMK_ANIMATION app PRIVATE src/animation/color.c)
-target_sources_ifdef(CONFIG_ZMK_ANIMATION app PRIVATE src/animation/animation_compose.c)
-target_sources_ifdef(CONFIG_ZMK_ANIMATION app PRIVATE src/animation/animation_control.c)
-target_sources_ifdef(CONFIG_ZMK_ANIMATION app PRIVATE src/animation/animation_ripple.c)
-target_sources_ifdef(CONFIG_ZMK_ANIMATION app PRIVATE src/animation/animation_solid.c)
-target_sources_ifdef(CONFIG_ZMK_ANIMATION app PRIVATE src/behaviors/behavior_animation.c)
+if (CONFIG_ZMK_ANIMATION)
+  add_subdirectory(src/animation)
+  target_sources(app PRIVATE src/behaviors/behavior_animation.c)
+endif()
 
 target_sources_ifdef(CONFIG_ZMK_SPLIT app PRIVATE src/events/split_peripheral_status_changed.c)
 add_subdirectory(src/split)
