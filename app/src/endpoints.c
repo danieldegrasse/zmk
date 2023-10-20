@@ -143,10 +143,10 @@ static int send_keyboard_report(void) {
         return err;
     }
 #endif /* IS_ENABLED(CONFIG_ZMK_BLE) */
+    default:
+        LOG_ERR("Unsupported endpoint transport %d", current_instance.transport);
+        return -ENOTSUP;
     }
-
-    LOG_ERR("Unsupported endpoint transport %d", current_instance.transport);
-    return -ENOTSUP;
 }
 
 static int send_consumer_report(void) {
@@ -172,10 +172,10 @@ static int send_consumer_report(void) {
         return err;
     }
 #endif /* IS_ENABLED(CONFIG_ZMK_BLE) */
+    default:
+        LOG_ERR("Unsupported endpoint transport %d", current_instance.transport);
+        return -ENOTSUP;
     }
-
-    LOG_ERR("Unsupported endpoint transport %d", current_instance.transport);
-    return -ENOTSUP;
 }
 
 int zmk_endpoints_send_report(uint16_t usage_page) {
