@@ -5,10 +5,6 @@ sidebar_label: Encoders
 
 Existing support for encoders in ZMK is focused around the five pin EC11 rotary encoder with push button design used in the majority of current keyboard and macropad designs.
 
-:::note
-Encoders are currently only support on the left/central sides of splits. For progress on this, see [#728](https://github.com/zmkfirmware/zmk/pull/728).
-:::
-
 ## Enabling EC11 Encoders
 
 To enable encoders for boards that have existing encoder support, uncomment the `CONFIG_EC11=y` and `CONFIG_EC11_TRIGGER_GLOBAL_THREAD=y` lines in your board's .conf file in your `zmk-config/config` folder. Save and push your changes, then download and flash the new firmware.
@@ -25,7 +21,7 @@ Keyboards and macropads with encoder support will typically take the two EC11 pi
 
 Rotation is handled separately as a type of sensor. The behavior for this is set in `sensor-bindings`. See [Sensor Rotation](../behaviors/sensor-rotate.md) for customizing this behavior.
 
-```
+```dts
 sensor-bindings = <BINDING [CW_KEY] [CCW_KEY]>;
 ```
 
@@ -37,7 +33,7 @@ Additional encoders can be configured by adding more bindings immediately after 
 
 As an example, a complete `sensor-bindings` for a Kyria with two encoders could look like:
 
-```
+```dts
 sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
 ```
 

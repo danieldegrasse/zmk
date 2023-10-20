@@ -20,7 +20,7 @@ A ZMK device may show as "connected" on multiple hosts at the same time. This is
 Bluetooth command defines are provided through the [`dt-bindings/zmk/bt.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/bt.h) header,
 which is added at the top of the keymap file:
 
-```
+```dts
 #include <dt-bindings/zmk/bt.h>
 ```
 
@@ -34,6 +34,11 @@ Here is a table describing the command for each define:
 | `BT_NXT` | Switch to the next profile, cycling through to the first one when the end is reached.                                                                     |
 | `BT_PRV` | Switch to the previous profile, cycling through to the last one when the beginning is reached.                                                            |
 | `BT_SEL` | Select the 0-indexed profile by number. Please note: this definition must include a number as an argument in the keymap to work correctly. eg. `BT_SEL 0` |
+
+:::note Selected profile persistence
+The profile that is selected by the `BT_SEL`/`BT_PRV`/`BT_NXT` actions will be saved to flash storage and hence persist across restarts and firmware flashes.
+However it will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../config/system.md#general) milliseconds in order to reduce potential wear on the flash memory.
+:::
 
 ## Bluetooth Behavior
 
@@ -49,25 +54,25 @@ The bluetooth behavior completes an bluetooth action given on press.
 
 1. Behavior binding to clear the paired host for the selected profile:
 
-   ```
+   ```dts
    &bt BT_CLR
    ```
 
 1. Behavior binding to select the next profile:
 
-   ```
+   ```dts
    &bt BT_NXT
    ```
 
 1. Behavior binding to select the previous profile:
 
-   ```
+   ```dts
    &bt BT_PRV
    ```
 
 1. Behavior binding to select the 2nd profile (passed parameters are [zero based](https://en.wikipedia.org/wiki/Zero-based_numbering)):
 
-   ```
+   ```dts
    &bt BT_SEL 1
    ```
 

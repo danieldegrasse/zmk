@@ -3477,7 +3477,7 @@ export default [
   },
   {
     names: ["INTERNATIONAL_6", "INT6", "INT_KPJPCOMMA"],
-    description: ", [カソマ] (International 6)",
+    description: ", [カンマ] (International 6)",
     context: "Keyboard",
     clarify: false,
     usages: [
@@ -7864,5 +7864,28 @@ export default [
       ios: null,
     },
     footnotes: {},
+  },
+  {
+    names: ["C_AC_NEXT_KEYBOARD_LAYOUT_SELECT", "GLOBE"],
+    description: "AC Next Keyboard Layout Select (Apple Globe)",
+    context: "Consumer AC",
+    clarify: true,
+    usages: [
+      {
+        application: consumerApplication,
+        item: usage(consumerPage, 0x29d),
+      },
+    ],
+    documentation: "https://usb.org/sites/default/files/hut1_2.pdf#page=153",
+    os: {
+      windows: null,
+      linux: null,
+      android: null,
+      macos: true,
+      ios: true,
+    },
+    footnotes: {
+      macos: ["globe"],
+    },
   },
 ];

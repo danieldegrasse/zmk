@@ -72,20 +72,31 @@ Applies to: `compatible = "zmk,kscan-gpio-direct"`
 
 Definition file: [zmk/app/drivers/zephyr/dts/bindings/kscan/zmk,kscan-gpio-direct.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/drivers/zephyr/dts/bindings/kscan/zmk%2Ckscan-gpio-direct.yaml)
 
-| Property                  | Type       | Description                                                                                                 | Default     |
-| ------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------- | ----------- |
-| `label`                   | string     | Unique label for the node                                                                                   |             |
-| `input-gpios`             | GPIO array | Input GPIOs (one per key)                                                                                   |             |
-| `debounce-press-ms`       | int        | Debounce time for key press in milliseconds. Use 0 for eager debouncing.                                    | 5           |
-| `debounce-release-ms`     | int        | Debounce time for key release in milliseconds.                                                              | 5           |
-| `debounce-scan-period-ms` | int        | Time between reads in milliseconds when any key is pressed.                                                 | 1           |
-| `diode-direction`         | string     | The direction of the matrix diodes                                                                          | `"row2col"` |
-| `poll-period-ms`          | int        | Time between reads in milliseconds when no key is pressed and `CONFIG_ZMK_KSCAN_DIRECT_POLLING` is enabled. | 10          |
-| `toggle-mode`             | bool       | Use toggle switch mode.                                                                                     | n           |
+| Property                  | Type       | Description                                                                                                 | Default |
+| ------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------- | ------- |
+| `label`                   | string     | Unique label for the node                                                                                   |         |
+| `input-gpios`             | GPIO array | Input GPIOs (one per key)                                                                                   |         |
+| `debounce-press-ms`       | int        | Debounce time for key press in milliseconds. Use 0 for eager debouncing.                                    | 5       |
+| `debounce-release-ms`     | int        | Debounce time for key release in milliseconds.                                                              | 5       |
+| `debounce-scan-period-ms` | int        | Time between reads in milliseconds when any key is pressed.                                                 | 1       |
+| `poll-period-ms`          | int        | Time between reads in milliseconds when no key is pressed and `CONFIG_ZMK_KSCAN_DIRECT_POLLING` is enabled. | 10      |
+| `toggle-mode`             | bool       | Use toggle switch mode.                                                                                     | n       |
 
 By default, a switch will drain current through the internal pull up/down resistor whenever it is pressed. This is not ideal for a toggle switch, where the switch may be left in the "pressed" state for a long time. Enabling `toggle-mode` will make the driver flip between pull up and down as the switch is toggled to optimize for power.
 
 `toggle-mode` applies to all switches handled by the instance of the driver. To use a toggle switch with other, non-toggle, direct GPIO switches, create two instances of the direct GPIO driver, one with `toggle-mode` and the other without. Then, use a [composite driver](#composite-driver) to combine them.
+
+Assuming the switches connect each GPIO pin to the ground, the [GPIO flags](https://docs.zephyrproject.org/3.2.0/hardware/peripherals/gpio.html#api-reference) for the elements in `input-gpios` should be `(GPIO_ACTIVE_LOW | GPIO_PULL_UP)`:
+
+```dts
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-direct";
+        input-gpios
+            = <&pro_micro 4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pro_micro 5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            ;
+    };
+```
 
 ## Matrix Driver
 
@@ -122,6 +133,24 @@ The `diode-direction` property must be one of:
 | ----------- | --------------------------------------------------------------------- |
 | `"row2col"` | Diodes point from rows to columns (cathodes are connected to columns) |
 | `"col2row"` | Diodes point from columns to rows (cathodes are connected to rows)    |
+
+Given the `diode-direction`, the [GPIO flags](https://docs.zephyrproject.org/3.2.0/hardware/peripherals/gpio.html#api-reference) for the elements in `row-` and `col-gpios` should be set appropriately.
+The output pins (e.g. columns for `col2row`) should have the flag `GPIO_ACTIVE_HIGH`, and input pins (e.g. rows for `col2row`) should have the flags `(GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)`:
+
+```dts
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        diode-direction = "col2row";
+        col-gpios
+            = <&pro_micro 4 GPIO_ACTIVE_HIGH>
+            , <&pro_micro 5 GPIO_ACTIVE_HIGH>
+            ;
+        row-gpios
+            = <&pro_micro 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&pro_micro 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            ;
+    };
+```
 
 ## Composite Driver
 
@@ -200,7 +229,7 @@ One possible way to do this is a 3x4 matrix where the direct GPIO keys are shift
 
 ...which can be configured with the following Devicetree code:
 
-```devicetree
+```dts
 / {
     chosen {
         zmk,kscan = &kscan0;
@@ -287,7 +316,7 @@ The `map` array should be defined using the `RC()` macro from [dt-bindings/zmk/m
 
 Any keyboard which is not a grid of 1 unit keys will likely have some unused positions in the matrix. A matrix transform can be used to skip the unused positions so users don't have to set them to `&none` in keymaps.
 
-```devicetree
+```dts
 // numpad.overlay
 / {
     chosen {
@@ -297,9 +326,7 @@ Any keyboard which is not a grid of 1 unit keys will likely have some unused pos
 
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
-        rows = <5>;
-        columns = <4>;
-        // define the matrix...
+        // define row-gpios with 5 elements and col-gpios with 4...
     };
 
     default_transform: matrix_transform {
@@ -328,7 +355,7 @@ Any keyboard which is not a grid of 1 unit keys will likely have some unused pos
 };
 ```
 
-```devicetree
+```dts
 // numpad.keymap
 / {
     keymap {
@@ -350,7 +377,7 @@ Any keyboard which is not a grid of 1 unit keys will likely have some unused pos
 
 Consider a keyboard with a [duplex matrix](https://wiki.ai03.com/books/pcb-design/page/matrices-and-duplex-matrix), where the matrix has twice as many rows and half as many columns as the keyboard has keys. A matrix transform can be used to correct for this so that keymaps can match the layout of the keys, not the layout of the matrix.
 
-```devicetree
+```dts
 / {
     chosen {
         zmk,kscan = &kscan0;
@@ -359,9 +386,7 @@ Consider a keyboard with a [duplex matrix](https://wiki.ai03.com/books/pcb-desig
 
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
-        rows = <12>;
-        columns = <8>;
-        // define the matrix...
+        // define row-gpios with 12 elements and col-gpios with 8...
     };
 
     default_transform: matrix_transform {
