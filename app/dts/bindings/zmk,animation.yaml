@@ -37,3 +37,16 @@ properties:
       This field can be used if the LED driver nodes for your LED controllers
       do not specify chain-length properties. The indices of the chain lengths
       used here must match the chain lengths desired for each LED driver.
+
+  chain-reserved-ranges:
+    type: array
+    description: |
+      If not all the pixels at offsets 0...N-1 are usable for a chain length of
+      N, this property contains a set of tuples specifying which ranges are
+      not used. The animation code will skip pixel calculations for these
+      ranges. Note that the "pixels" property should be set to an array
+      of pixels accounting for these reserved ranges.
+
+      For example, setting "chain-reserved-ranges = <3 2>, <10 1>;" means that
+      offsets 3,4 and 10 in the LED driver buffer will not be populated with
+      pixel data, and should be skipped in the "pixels" property.
