@@ -124,7 +124,7 @@ static uint32_t animation_timer_countdown = 0;
  * Conditional implementation of zmk_animation_get_pixel_by_key_position
  * if key-pixels is set.
  */
-#if DT_INST_NODE_HAS_PROP(0, key_position)
+#if DT_INST_NODE_HAS_PROP(0, key_pixels)
 static const uint8_t pixels_by_key_position[] = DT_INST_PROP(0, key_pixels);
 
 size_t zmk_animation_get_pixel_by_key_position(size_t key_position) {

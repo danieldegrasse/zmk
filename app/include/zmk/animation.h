@@ -28,7 +28,7 @@ struct zmk_color_hsl {
     uint8_t l;
 };
 
-#if DT_NODE_HAS_PROP(DT_INST(0, animation), key_position)
+#if DT_NODE_HAS_PROP(DT_INST(0, zmk_animation), key_pixels)
 size_t zmk_animation_get_pixel_by_key_position(size_t key_position);
 #else
 static inline size_t zmk_animation_get_pixel_by_key_position(size_t key_position) {
