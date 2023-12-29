@@ -100,18 +100,22 @@ int animation_control_handle_command(const struct device *dev, uint8_t command, 
         animation_stop(config->animations[data->current_animation]);
         break;
     case ANIMATION_CMD_NEXT:
+        animation_stop(config->animations[data->current_animation]);
         data->current_animation++;
 
         if (data->current_animation == config->animations_size) {
             data->current_animation = 0;
         }
+        animation_start(config->animations[data->current_animation]);
         break;
     case ANIMATION_CMD_PREVIOUS:
+        animation_stop(config->animations[data->current_animation]);
         if (data->current_animation == 0) {
             data->current_animation = config->animations_size;
         }
 
         data->current_animation--;
+        animation_start(config->animations[data->current_animation]);
         break;
     case ANIMATION_CMD_SELECT:
         if (config->animations_size < param) {
