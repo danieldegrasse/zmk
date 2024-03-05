@@ -93,8 +93,10 @@ static void animation_ripple_render_frame(const struct device *dev, struct anima
     size_t *pixel_map = config->pixel_map;
 
     size_t i = data->events_start;
+    /* Used to detect case where data->events_start == data->events_end */
+    bool events_full = (data->num_events == config->event_buffer_size);
 
-    while (i != data->events_end) {
+    while (i != data->events_end || events_full) {
         struct animation_ripple_event *event = &data->event_buffer[i];
 
         // Render all pixels for each event
@@ -124,6 +126,9 @@ static void animation_ripple_render_frame(const struct device *dev, struct anima
             data->events_start = (data->events_start + 1) % config->event_buffer_size;
             data->num_events -= 1;
         }
+
+        /* Clear event full flag, so we can exit loop */
+        events_full = false;
 
         if (++i == config->event_buffer_size) {
             i = 0;
