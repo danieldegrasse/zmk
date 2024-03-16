@@ -57,7 +57,7 @@ static const struct animation_api animation_compose_api = {
 #define ANIMATION_COMPOSE_DEVICE(idx)                                                              \
                                                                                                    \
     static const struct device *animation_compose_##idx##_animations[] = {                         \
-        ZMK_DT_INST_FOREACH_PROP_ELEM(idx, animations, PHANDLE_TO_DEVICE)};                        \
+        DT_INST_FOREACH_PROP_ELEM(idx, animations, PHANDLE_TO_DEVICE)};                            \
                                                                                                    \
     static struct animation_compose_config animation_compose_##idx##_config = {                    \
         .animations = animation_compose_##idx##_animations,                                        \
