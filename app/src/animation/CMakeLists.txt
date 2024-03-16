@@ -9,4 +9,5 @@ target_sources_ifdef(CONFIG_ZMK_ANIMATION_COMPOSE app PRIVATE animation_compose.
 target_sources_ifdef(CONFIG_ZMK_ANIMATION_CONTROL app PRIVATE animation_control.c)
 target_sources_ifdef(CONFIG_ZMK_ANIMATION_RIPPLE app PRIVATE animation_ripple.c)
 target_sources_ifdef(CONFIG_ZMK_ANIMATION_SOLID app PRIVATE animation_solid.c)
+target_sources_ifdef(CONFIG_ZMK_ANIMATION_INDICATOR app PRIVATE animation_indicator.c)
 

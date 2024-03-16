@@ -376,6 +376,10 @@ config ZMK_ANIMATION_COMPOSE
 	bool "Animation compose driver"
 	default y if DT_HAS_ZMK_ANIMATION_COMPOSE_ENABLED
 
+config ZMK_ANIMATION_INDICATOR
+	bool "Animation indicator driver"
+	default y if DT_HAS_ZMK_ANIMATION_INDICATOR_ENABLED
+
 #ZMK_ANIMATION
 endif
 

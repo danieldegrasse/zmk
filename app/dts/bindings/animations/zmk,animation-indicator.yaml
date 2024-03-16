@@ -1,0 +1,23 @@
+# Copyright (c) 2024, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: |
+  Indicator animation. Sets a pixel zone a solid color if the key selected
+  by this binding is pressed, and turns off the zone if not.
+
+compatible: "zmk,animation-indicator"
+
+include: animation_base.yaml
+
+properties:
+  key:
+    type: int
+    required: true
+    description: |
+      Keycode that the indicator should track the state of
+
+  color:
+    type: int
+    required: true
+    description: |
+      Indicator color
