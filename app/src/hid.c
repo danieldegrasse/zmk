@@ -16,6 +16,8 @@ static struct zmk_hid_keyboard_report keyboard_report = {
 
 static struct zmk_hid_consumer_report consumer_report = {.report_id = 2, .body = {.keys = {0}}};
 
+static struct zmk_hid_gen_desktop_report gen_desktop_report = {.report_id = 3, .body = {.keys = 0}};
+
 // Keep track of how often a modifier was pressed.
 // Only release the modifier if the count is 0.
 static int explicit_modifier_counts[8] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -160,6 +162,9 @@ static inline int check_keyboard_usage(zmk_key_t usage) {
         }                                                                                          \
     }
 
+#define TOGGLE_GEN_DESKTOP(key) gen_desktop_report.body.keys ^= BIT((key - HID_USAGE_GD_SYSTEM_POWER_DOWN))
+
+
 int zmk_hid_implicit_modifiers_press(zmk_mod_flags_t new_implicit_modifiers) {
     implicit_modifiers = new_implicit_modifiers;
     zmk_mod_flags_t current = GET_MODIFIERS;
@@ -234,12 +239,24 @@ bool zmk_hid_consumer_is_pressed(zmk_key_t key) {
     return false;
 }
 
+int zmk_hid_gen_desktop_press(zmk_key_t code) {
+    TOGGLE_GEN_DESKTOP(code);
+    return 0;
+}
+
+int zmk_hid_gen_desktop_release(zmk_key_t code) {
+    TOGGLE_GEN_DESKTOP(code);
+    return 0;
+}
+
 int zmk_hid_press(uint32_t usage) {
     switch (ZMK_HID_USAGE_PAGE(usage)) {
     case HID_USAGE_KEY:
         return zmk_hid_keyboard_press(ZMK_HID_USAGE_ID(usage));
     case HID_USAGE_CONSUMER:
         return zmk_hid_consumer_press(ZMK_HID_USAGE_ID(usage));
+    case HID_USAGE_GD:
+	return zmk_hid_gen_desktop_press(ZMK_HID_USAGE_ID(usage));
     }
     return -EINVAL;
 }
@@ -250,6 +267,8 @@ int zmk_hid_release(uint32_t usage) {
         return zmk_hid_keyboard_release(ZMK_HID_USAGE_ID(usage));
     case HID_USAGE_CONSUMER:
         return zmk_hid_consumer_release(ZMK_HID_USAGE_ID(usage));
+    case HID_USAGE_GD:
+	return zmk_hid_gen_desktop_release(ZMK_HID_USAGE_ID(usage));
     }
     return -EINVAL;
 }
@@ -270,4 +289,8 @@ struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report() {
 
 struct zmk_hid_consumer_report *zmk_hid_get_consumer_report() {
     return &consumer_report;
+}
+
+struct zmk_hid_gen_desktop_report *zmk_hid_get_gen_desktop_report() {
+    return &gen_desktop_report;
 }

@@ -178,10 +178,34 @@ static int send_consumer_report(void) {
     }
 }
 
+/* TODO- only USB is supported as a transport for now */
+static int send_gen_desktop_report(void) {
+    struct zmk_hid_gen_desktop_report *gen_desktop_report = zmk_hid_get_gen_desktop_report();
+
+    switch (current_instance.transport) {
+#if IS_ENABLED(CONFIG_ZMK_USB)
+    case ZMK_TRANSPORT_USB: {
+        int err = zmk_usb_hid_send_report((uint8_t *)gen_desktop_report, sizeof(*gen_desktop_report));
+        if (err) {
+            LOG_ERR("FAILED TO SEND OVER USB: %d", err);
+        }
+        return err;
+    }
+#endif /* IS_ENABLED(CONFIG_ZMK_USB) */
+
+    default:
+        LOG_ERR("Unsupported endpoint transport %d", current_instance.transport);
+        return -ENOTSUP;
+    }
+}
+
 int zmk_endpoints_send_report(uint16_t usage_page) {
 
     LOG_DBG("usage page 0x%02X", usage_page);
     switch (usage_page) {
+    case HID_USAGE_GD:
+        return send_gen_desktop_report();
+
     case HID_USAGE_KEY:
         return send_keyboard_report();
 

@@ -26,10 +26,11 @@
 #define HID_OUTPUT_REPORT_TYPE 0x2
 #define HID_FEATURE_REPORT_TYPE 0x3
 
-#define SETTINGS_REPORT_ID_FUNCTIONS 0x3
-#define SETTINGS_REPORT_ID_KEY_SEL 0x4
-#define SETTINGS_REPORT_ID_KEY_DATA 0x5
-#define SETTINGS_REPORT_ID_KEY_COMMIT 0x6
+#define GEN_DESKTOP_REPORT_ID 0x3
+#define SETTINGS_REPORT_ID_FUNCTIONS 0x4
+#define SETTINGS_REPORT_ID_KEY_SEL 0x5
+#define SETTINGS_REPORT_ID_KEY_DATA 0x6
+#define SETTINGS_REPORT_ID_KEY_COMMIT 0x7
 
 static const uint8_t zmk_hid_report_desc[] = {
     HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP),
@@ -103,6 +104,21 @@ static const uint8_t zmk_hid_report_desc[] = {
     /* INPUT (Data,Ary,Abs) */
     HID_INPUT(0x00),
     HID_END_COLLECTION,
+    HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP),
+    HID_USAGE(HID_USAGE_GD_SYSTEM_CONTROL),
+    HID_COLLECTION(HID_COLLECTION_APPLICATION),
+    HID_REPORT_ID(GEN_DESKTOP_REPORT_ID),
+    HID_LOGICAL_MIN8(0x00),
+    HID_LOGICAL_MAX8(0x01),
+    /* Support from power down usage (0x81) to menu exit usage (0x88) */
+    HID_USAGE_MIN8(HID_USAGE_GD_SYSTEM_POWER_DOWN),
+    HID_USAGE_MAX8(HID_USAGE_GD_SYSTEM_MENU_EXIT),
+    HID_REPORT_SIZE(0x01),
+    /* 8 usages- each usage is a single bit indicating if the usage is set */
+    HID_REPORT_COUNT(0x08),
+    /* INPUT report (Data,Var,Abs) */
+    HID_INPUT(0x02),
+    HID_END_COLLECTION,
 #if IS_ENABLED(CONFIG_ZMK_SETTINGS)
     HID_USAGE_PAGE16(HID_USAGE_VENDOR),
     HID_USAGE(HID_USAGE_ZMK_KEYMAP),
@@ -170,6 +186,15 @@ struct zmk_hid_consumer_report_body {
 struct zmk_hid_consumer_report {
     uint8_t report_id;
     struct zmk_hid_consumer_report_body body;
+} __packed;
+
+struct zmk_hid_gen_desktop_report_body {
+    uint8_t keys; /* Bitmask of usage IDs that are pressed */
+} __packed;
+
+struct zmk_hid_gen_desktop_report {
+    uint8_t report_id;
+    struct zmk_hid_gen_desktop_report_body body;
 } __packed;
 
 #if IS_ENABLED(CONFIG_SETTINGS)
@@ -249,3 +274,4 @@ bool zmk_hid_is_pressed(uint32_t usage);
 
 struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report();
 struct zmk_hid_consumer_report *zmk_hid_get_consumer_report();
+struct zmk_hid_gen_desktop_report *zmk_hid_get_gen_desktop_report();
