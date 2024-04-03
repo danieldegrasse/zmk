@@ -70,7 +70,18 @@ static int keymap_record_to_binding(struct zmk_behavior_binding *out,
 static int keymap_binding_to_record(struct zmk_keymap_record *out,
                                     struct zmk_behavior_binding *in) {
     uint32_t id;
+    if (in->behavior_dev == NULL) {
+        /* This is an expected issue if one of the layer slots for the
+         * keyboard has not been programmed and has NULL data.
+         * We will fall back to returning the key mapped at layer 0, idx
+         * 0, as this will be valid for any working keyboard.
+         */
+        return keymap_binding_to_record(out, &zmk_keymap[0][0]);
+    }
     for (id = 0; id < ARRAY_SIZE(behavior_map); id++) {
+	if (behavior_map[id] == NULL) {
+            continue;
+	}
         if (strcmp(in->behavior_dev, behavior_map[id]) == 0) {
             break;
         }
@@ -198,10 +209,10 @@ int zmk_config_init(void) {
 int zmk_config_get_key_record(uint8_t layer_index, uint8_t key_index,
                                 struct zmk_keymap_record *record)
 {
-    if (layer_index > CONFIG_ZMK_SETTINGS_KEYMAP_LAYERS) {
+    if (layer_index >= CONFIG_ZMK_SETTINGS_KEYMAP_LAYERS) {
         return -EINVAL;
     }
-    if (key_index > ZMK_KEYMAP_LEN) {
+    if (key_index >= ZMK_KEYMAP_LEN) {
         return -EINVAL;
     }
     /* Convert binding to record */
