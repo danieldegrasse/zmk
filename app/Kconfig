@@ -377,6 +377,41 @@ endmenu # Display/LED Options
 
 rsource "src/pointing/Kconfig"
 
+config ZMK_ANIMATION
+    bool "LED Animations"
+
+if ZMK_ANIMATION
+
+choice ZMK_ANIMATION_TYPE
+    prompt "RGB or single color animation support"
+    default ZMK_ANIMATION_TYPE_RGB
+
+config ZMK_ANIMATION_TYPE_RGB
+    bool "RGB animation"
+    select LED_STRIP
+    help
+      Enable RGB animation support.
+
+config ZMK_ANIMATION_TYPE_MONO
+    bool "Single color LED animation"
+    select LED
+    help
+      Enable single color LED animation support.
+endchoice
+
+config ZMK_ANIMATION_FPS
+    int "Animation FPS"
+    range 0 60
+    default 30
+
+config ZMK_ANIMATION_PIXEL_DISTANCE
+    bool "Generate a lookup table for distances between pixels"
+    default y
+
+rsource "Kconfig.animations"
+
+endif #ZMK_ANIMATION
+
 menu "Power Management"
 
 config ZMK_BATTERY_REPORTING
