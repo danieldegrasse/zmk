@@ -99,6 +99,7 @@ add_subdirectory_ifdef(CONFIG_ZMK_HID_INDICATORS src/indicators)
 
 if (CONFIG_ZMK_ANIMATION)
   add_subdirectory(src/animation)
+  target_sources(app PRIVATE src/behaviors/behavior_animation.c)
 endif()
 
 target_sources_ifdef(CONFIG_ZMK_SPLIT app PRIVATE src/events/split_peripheral_status_changed.c)
