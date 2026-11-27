@@ -9,3 +9,7 @@ config ZMK_ANIMATION_SOLID
 config ZMK_ANIMATION_COMPOSE
     bool "Animation compose driver"
     default y if DT_HAS_ZMK_ANIMATION_COMPOSE_ENABLED
+
+config ZMK_ANIMATION_RIPPLE
+    bool "Ripple animation driver"
+    default y if DT_HAS_ZMK_ANIMATION_RIPPLE_ENABLED

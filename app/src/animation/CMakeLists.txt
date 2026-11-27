@@ -4,4 +4,5 @@ target_sources(app PRIVATE color.c)
 
 # Add animation drivers based on which are enabled
 target_sources_ifdef(CONFIG_ZMK_ANIMATION_COMPOSE app PRIVATE animation_compose.c)
+target_sources_ifdef(CONFIG_ZMK_ANIMATION_RIPPLE app PRIVATE animation_ripple.c)
 target_sources_ifdef(CONFIG_ZMK_ANIMATION_SOLID app PRIVATE animation_solid.c)
