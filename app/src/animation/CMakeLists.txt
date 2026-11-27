@@ -1,3 +1,6 @@
 # Include base animation drivers
 target_sources(app PRIVATE animation.c)
 target_sources(app PRIVATE color.c)
+
+# Add animation drivers based on which are enabled
+target_sources_ifdef(CONFIG_ZMK_ANIMATION_SOLID app PRIVATE animation_solid.c)

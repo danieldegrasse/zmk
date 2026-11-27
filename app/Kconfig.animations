@@ -1,0 +1,7 @@
+# Copyright (c) 2026 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+# Animation driver types
+config ZMK_ANIMATION_SOLID
+    bool "Solid animation driver"
+    default y if DT_HAS_ZMK_ANIMATION_SOLID_ENABLED
