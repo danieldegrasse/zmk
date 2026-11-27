@@ -17,3 +17,7 @@ config ZMK_ANIMATION_CONTROL
 config ZMK_ANIMATION_RIPPLE
     bool "Ripple animation driver"
     default y if DT_HAS_ZMK_ANIMATION_RIPPLE_ENABLED
+
+config ZMK_ANIMATION_INDICATOR
+    bool "Animation indicator driver"
+    default y if DT_HAS_ZMK_ANIMATION_INDICATOR_ENABLED
